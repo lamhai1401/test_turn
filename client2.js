@@ -1,9 +1,9 @@
 var config = {
     sdpSemantics: 'unified-plan',
     iceServers: [
-        {
-            urls: ['stun:stun.l.google.com:19302']
-        },
+        // {
+        //     urls: ['stun:stun.l.google.com:19302']
+        // },
         {
             urls: ["turn:35.247.173.254:3478"],
             username: "username",
