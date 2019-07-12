@@ -20,6 +20,16 @@ func main() {
 	router.
 		HandleFunc("/client2.js", js2Handler)
 
+	router.
+		HandleFunc("/sendoffer", sendOffer).Methods("POST")
+	router.
+		HandleFunc("/sendanswer", sendAnswer).Methods("POST")
+
+	router.
+		HandleFunc("/getoffer", getOffer).Methods("GET")
+	router.
+		HandleFunc("/getanswer", getAnswer).Methods("GET")
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
