@@ -8,14 +8,6 @@
 </head>
 <body>
 
-    Offer<br />
-    <textarea id="localSessionDescription" readonly="true"></textarea> <br />
-    
-    Answer<br/>
-    <textarea id="remoteSessionDescription"></textarea> <br/>
-
-    <button onclick="start()"> Start Session </button>
-
     <h2>State</h2>
     <p>
         ICE gathering state: <span id="ice-gathering-state"></span>
@@ -27,12 +19,16 @@
         Signaling state: <span id="signaling-state"></span>
     </p>
 
-    Video<br />
-    <div id="localVideos"></div> <br />
+    <div id="media">
+        <h2>Media</h2>
+    
+        <audio id="audio" autoplay="true"></audio>
+        <video id="video" autoplay="true" playsinline="true"></video>
+    </div>
 
     Logs<br />
     <div id="logs"></div>
 
-    <script src="/client1.js"></script>
+    <script src="/client4.js"></script>
 </body>
 </html>

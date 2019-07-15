@@ -23,11 +23,12 @@ var pc = new RTCPeerConnection(config)
 var iceConnectionLog = document.getElementById('ice-connection-state'),
     iceGatheringLog = document.getElementById('ice-gathering-state'),
     signalingLog = document.getElementById('signaling-state');
-localSessionDescription = document.getElementById('localSessionDescription')
+    localSessionDescription = document.getElementById('localSessionDescription')
 
 let log = msg => {
     document.getElementById('logs').innerHTML += msg + '<br>'
 }
+
 let displayVideo = video => {
     var el = document.createElement('video')
     el.srcObject = video
@@ -44,37 +45,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then(stream => {
         pc.addStream(displayVideo(stream))
         pc.createOffer().then(d => {
-            pc.setLocalDescription(d)
-
-            // register some listeners to help debugging
-            pc.addEventListener('icegatheringstatechange', function () {
-                iceGatheringLog.textContent += ' -> ' + pc.iceGatheringState;
-            }, false);
-            iceGatheringLog.textContent = pc.iceGatheringState;
-
-            pc.addEventListener('iceconnectionstatechange', function () {
-                iceConnectionLog.textContent += ' -> ' + pc.iceConnectionState;
-            }, false);
-            iceConnectionLog.textContent = pc.iceConnectionState;
-
-            pc.addEventListener('signalingstatechange', function () {
-                signalingLog.textContent += ' -> ' + pc.signalingState;
-            }, false);
-            signalingLog.textContent = pc.signalingState;
-
-            return fetch('/sendoffer', {
-                body: JSON.stringify({
-                    "sdp": d.sdp,
-                    "type": d.type,
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST'
-            })
-
-            .then(resp => console.log(resp))
-            .catch(e => alert(e))
+            return pc.setLocalDescription(d)
         }).catch(log)
     }).catch(log)
 
@@ -112,23 +83,7 @@ function start() {
     try {
         pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(sd))))
     } catch (e) {
-        alert(e)
+        log(e)
     }
-}
-
-function start2() {
-    return fetch('/getanswer', {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'GET'
-    })
-        .then(resp => resp.json())
-        .then(resp => {
-            answer = resp['answer']
-            console.log("answer", answer)
-            return pc.setRemoteDescription(answer)
-        })
-        .catch(err => alert(err))
 }
 

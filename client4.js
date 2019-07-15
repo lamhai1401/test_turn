@@ -1,3 +1,4 @@
+
 var config = {
     sdpSemantics: 'unified-plan',
     iceServers: [
@@ -8,12 +9,12 @@ var config = {
             urls: ["turn:35.247.173.254:3478"],
             username: "username",
             credential: "password"
-        },
-        {
-            urls: ["turn:numb.viagenie.ca"],
-            credential: "muazkh",
-            username: "webrtc@live.com"
         }
+        // {
+        //     urls: ["turn:numb.viagenie.ca"],
+        //     credential: "muazkh",
+        //     username: "webrtc@live.com"
+        // }
     ]
 };
 
@@ -28,24 +29,17 @@ let log = msg => {
     document.getElementById('logs').innerHTML += msg + '<br>'
 }
 
-let displayVideo = video => {
-    var el = document.createElement('video')
-    el.srcObject = video
-    el.autoplay = true
-    el.muted = true
-    el.width = 160
-    el.height = 120
+fetch('/getoffer', {
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    method: 'GET'
+})
+.then(resp => resp.json())
+.then(resp => {
+    offer = resp['offer']
+    console.log("offer", offer)
 
-    document.getElementById('localVideos').appendChild(el)
-    return video
-}
-
-function join() {    
-    let sd = document.getElementById('remoteSessionDescription').value
-    if (sd === '') {
-        return alert('Session Description must not be empty')
-    }
-    
     // register some listeners to help debugging
     pc.addEventListener('icegatheringstatechange', function() {
         iceGatheringLog.textContent += ' -> ' + pc.iceGatheringState;
@@ -62,7 +56,7 @@ function join() {
     }, false);
     signalingLog.textContent = pc.signalingState;
 
-    // connect audio / video
+     // connect audio / video
     pc.addEventListener('track', function (evt) {
         console.log("Track event: ", evt)
         if (evt.track.kind == 'video')
@@ -71,17 +65,28 @@ function join() {
           document.getElementById('audio').srcObject = evt.streams[0];
     });
 
-    console.log(2)
-    return pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(sd))))
+    return pc.setRemoteDescription(offer)
     .then(() => pc.createAnswer())
     .then(answer => {
-        pc.setLocalDescription(answer)
-        pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
-        pc.onicecandidate = event => {
-            if (event.candidate === null) {
-                document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))
-            }
-        }
+        return pc.setLocalDescription(answer)
     })
-    .catch(e => alert(e))
-}
+    .then(() => {
+        answer = pc.localDescription
+        fetch('/sendanswer', {
+            body: JSON.stringify({
+                "sdp": answer.sdp,
+                "type": answer.type,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST'
+        })
+        .then(resp => {
+            console.log(resp.json())
+        })
+        .catch(err => log(err))
+    })
+    .catch(err => log(err))
+})
+.catch(err => log(err))

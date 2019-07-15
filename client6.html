@@ -7,14 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-
-    Offer<br />
-    <textarea id="localSessionDescription" readonly="true"></textarea> <br />
+    Answer<br />
+    <textarea id="localSessionDescription"></textarea> <br />
     
-    Answer<br/>
+    Offer<br/>
     <textarea id="remoteSessionDescription"></textarea> <br/>
 
-    <button onclick="start()"> Start Session </button>
+    <button onclick="join()"> Start Session </button>
 
     <h2>State</h2>
     <p>
@@ -27,12 +26,19 @@
         Signaling state: <span id="signaling-state"></span>
     </p>
 
+    <div id="media">
+        <h2>Media</h2>
+    
+        <audio id="audio" autoplay="true"></audio>
+        <video id="video" autoplay="true" playsinline="true"></video>
+    </div>
+
     Video<br />
     <div id="localVideos"></div> <br />
 
     Logs<br />
     <div id="logs"></div>
 
-    <script src="/client1.js"></script>
+    <script src="/client6.js"></script>
 </body>
 </html>
