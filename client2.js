@@ -45,7 +45,7 @@ function join() {
     if (sd === '') {
         return alert('Session Description must not be empty')
     }
-    console.log(1)
+    
     // register some listeners to help debugging
     pc.addEventListener('icegatheringstatechange', function() {
         iceGatheringLog.textContent += ' -> ' + pc.iceGatheringState;
@@ -76,7 +76,6 @@ function join() {
     .then(() => pc.createAnswer())
     .then(answer => {
         pc.setLocalDescription(answer)
-        console.log("here")
         pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
         pc.onicecandidate = event => {
             if (event.candidate === null) {
@@ -86,59 +85,3 @@ function join() {
     })
     .catch(e => alert(e))
 }
-
-fetch('/getoffer', {
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    method: 'GET'
-})
-.then(resp => resp.json())
-.then(resp => {
-    offer = resp['offer']
-    console.log("offer", offer)
-
-    // register some listeners to help debugging
-    pc.addEventListener('icegatheringstatechange', function() {
-        iceGatheringLog.textContent += ' -> ' + pc.iceGatheringState;
-    }, false);
-    iceGatheringLog.textContent = pc.iceGatheringState;
-
-    pc.addEventListener('iceconnectionstatechange', function() {
-        iceConnectionLog.textContent += ' -> ' + pc.iceConnectionState;
-    }, false);
-    iceConnectionLog.textContent = pc.iceConnectionState;
-
-    pc.addEventListener('signalingstatechange', function() {
-        signalingLog.textContent += ' -> ' + pc.signalingState;
-    }, false);
-    signalingLog.textContent = pc.signalingState;
-
-    // connect audio / video
-    pc.addEventListener('track', function (evt) {
-        console.log("Track event: ", evt)
-        if (evt.track.kind == 'video')
-            document.getElementById('video').srcObject = evt.streams[0];
-        else
-            document.getElementById('audio').srcObject = evt.streams[0];
-    });
-
-    return pc.setRemoteDescription(offer)
-})
-.then(() => pc.createAnswer())
-.then(async answer => {
-    pc.setLocalDescription(answer)
-    return fetch('/sendanswer', {
-        body: JSON.stringify({
-            "sdp": answer.sdp,
-            "type": answer.type,
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'POST'
-    }); 
-})
-.then(resp => resp.json())
-.then(resp => console.log(resp))
-.catch(err => alert(err))

@@ -30,6 +30,24 @@ func main() {
 	router.
 		HandleFunc("/getanswer", getAnswer).Methods("GET")
 
+	router.
+		HandleFunc("/client3", client3Handler)
+	router.
+		HandleFunc("/client3.js", js3Handler)
+	router.
+		HandleFunc("/client4", client4Handler)
+	router.
+		HandleFunc("/client4.js", js4Handler)
+
+	router.
+		HandleFunc("/client5", client5Handler)
+	router.
+		HandleFunc("/client5.js", js5Handler)
+	router.
+		HandleFunc("/client6", client6Handler)
+	router.
+		HandleFunc("/client6.js", js6Handler)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -55,6 +73,29 @@ func client2Handler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, path)
 }
 
+func client3Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client3.html")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
+
+func client4Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client4.html")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
+
+func client5Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client5.html")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
+
+func client6Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client6.html")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
 func js1Handler(w http.ResponseWriter, r *http.Request) {
 	path := fmt.Sprintf("client1.js")
 	fmt.Println(path)
@@ -63,6 +104,30 @@ func js1Handler(w http.ResponseWriter, r *http.Request) {
 
 func js2Handler(w http.ResponseWriter, r *http.Request) {
 	path := fmt.Sprintf("client2.js")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
+
+func js3Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client3.js")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
+
+func js4Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client4.js")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
+
+func js5Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client5.js")
+	fmt.Println(path)
+	http.ServeFile(w, r, path)
+}
+
+func js6Handler(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("client6.js")
 	fmt.Println(path)
 	http.ServeFile(w, r, path)
 }
