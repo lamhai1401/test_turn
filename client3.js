@@ -9,12 +9,12 @@ var config = {
             urls: ["turn:35.247.173.254:3478"],
             username: "username",
             credential: "password"
-        },
-        {
-            urls: ["turn:numb.viagenie.ca"],
-            credential: "muazkh",
-            username: "webrtc@live.com"
         }
+        // {
+        //     urls: ["turn:numb.viagenie.ca"],
+        //     credential: "muazkh",
+        //     username: "webrtc@live.com"
+        // }
     ]
 };
 

@@ -9,12 +9,12 @@ var config = {
             urls: ["turn:35.247.173.254:3478"],
             username: "username",
             credential: "password"
-        },
-        {
-            urls: ["turn:numb.viagenie.ca"],
-            credential: "muazkh",
-            username: "webrtc@live.com"
         }
+        // {
+        //     urls: ["turn:numb.viagenie.ca"],
+        //     credential: "muazkh",
+        //     username: "webrtc@live.com"
+        // }
     ]
 };
 
@@ -68,7 +68,10 @@ fetch('/getoffer', {
     return pc.setRemoteDescription(offer)
     .then(() => pc.createAnswer())
     .then(answer => {
-        
+        return pc.setLocalDescription(answer)
+    })
+    .then(() => {
+        answer = pc.localDescription
         fetch('/sendanswer', {
             body: JSON.stringify({
                 "sdp": answer.sdp,
@@ -83,7 +86,6 @@ fetch('/getoffer', {
             console.log(resp.json())
         })
         .catch(err => log(err))
-        return pc.setLocalDescription(answer)
     })
     .catch(err => log(err))
 })

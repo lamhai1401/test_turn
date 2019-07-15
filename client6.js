@@ -74,14 +74,19 @@ function join() {
     console.log(2)
     return pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(sd))))
     .then(() => pc.createAnswer())
-    .then(answer => {
-        pc.setLocalDescription(answer)
+    .then(async answer => {
         pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
-        pc.onicecandidate = event => {
-            if (event.candidate === null) {
-                document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))
+        pc.setLocalDescription(answer)
+
+        return new Promise(resolve => {
+            pc.onicecandidate = event => {
+                if (event.candidate === null) {
+                    document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))
+                    resolve()
+                }
             }
-        }
+        })
+
     })
     .catch(e => alert(e))
 }
@@ -100,6 +105,23 @@ setTimeout(async() => {
 
     document.getElementById('remoteSessionDescription').value = btoa(JSON.stringify(offer))
 
-    join()
+    await join()
+
+    console.log(atob(document.getElementById('localSessionDescription').value))
+    
+    let answer = JSON.parse(atob(document.getElementById('localSessionDescription').value))
+
+    await fetch('/sendanswer', {
+        body: JSON.stringify({
+            "sdp": answer.sdp,
+            "type": answer.type,
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'POST'
+    })
+
+    console.log("done")
 })
 

@@ -18,12 +18,12 @@ var config = {
     ]
 };
 
-var pc = new RTCPeerConnection(config)
+var peerconnection = new RTCPeerConnection(config)
 
 var iceConnectionLog = document.getElementById('ice-connection-state'),
     iceGatheringLog = document.getElementById('ice-gathering-state'),
     signalingLog = document.getElementById('signaling-state');
-    localSessionDescription = document.getElementById('localSessionDescription')
+localSessionDescription = document.getElementById('localSessionDescription')
 
 let log = msg => {
     document.getElementById('logs').innerHTML += msg + '<br>'
@@ -44,9 +44,9 @@ let displayVideo = video => {
 navigator.mediaDevices
     .getUserMedia({ video: true, audio: true })
     .then(async stream => {
-        await pc.addStream(displayVideo(stream))
-        let d = await pc.createOffer()
-        await pc.setLocalDescription(d)
+        await peerconnection.addStream(displayVideo(stream))
+        let d = await peerconnection.createOffer()
+        await peerconnection.setLocalDescription(d)
         return d
     })
     .then((d) => {
@@ -63,15 +63,26 @@ navigator.mediaDevices
     })
     .catch(log)
 
-pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
+peerconnection.oniceconnectionstatechange = e => log(peerconnection.iceConnectionState)
 
-pc.onicecandidate = event => {
+peerconnection.onicecandidate = event => {
     if (event.candidate === null) {
-        document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))
+        document.getElementById('localSessionDescription').value = btoa(JSON.stringify(peerconnection.localDescription))
     }
 }
 
-function start() {
+async function start() {
+
+    let { answer } = await fetch('/getanswer', {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'GET'
+    })
+        .then(resp => resp.json())
+
+    document.getElementById('remoteSessionDescription').value = btoa(JSON.stringify(answer))
+
     let sd = document.getElementById('remoteSessionDescription').value
 
     if (sd === '') {
@@ -79,23 +90,23 @@ function start() {
     }
 
     // register some listeners to help debugging
-    pc.addEventListener('icegatheringstatechange', function () {
-        iceGatheringLog.textContent += ' -> ' + pc.iceGatheringState;
+    peerconnection.addEventListener('icegatheringstatechange', function () {
+        iceGatheringLog.textContent += ' -> ' + peerconnection.iceGatheringState;
     }, false);
-    iceGatheringLog.textContent = pc.iceGatheringState;
+    iceGatheringLog.textContent = peerconnection.iceGatheringState;
 
-    pc.addEventListener('iceconnectionstatechange', function () {
-        iceConnectionLog.textContent += ' -> ' + pc.iceConnectionState;
+    peerconnection.addEventListener('iceconnectionstatechange', function () {
+        iceConnectionLog.textContent += ' -> ' + peerconnection.iceConnectionState;
     }, false);
-    iceConnectionLog.textContent = pc.iceConnectionState;
+    iceConnectionLog.textContent = peerconnection.iceConnectionState;
 
-    pc.addEventListener('signalingstatechange', function () {
-        signalingLog.textContent += ' -> ' + pc.signalingState;
+    peerconnection.addEventListener('signalingstatechange', function () {
+        signalingLog.textContent += ' -> ' + peerconnection.signalingState;
     }, false);
-    signalingLog.textContent = pc.signalingState;
+    signalingLog.textContent = peerconnection.signalingState;
 
     try {
-        pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(sd))))
+        peerconnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(sd))))
     } catch (e) {
         log(e)
     }
