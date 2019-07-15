@@ -43,25 +43,26 @@ let displayVideo = video => {
 pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
 
 navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then(stream => {
-        pc.addStream(displayVideo(stream))
-        pc.createOffer().then(d => {
-            pc.setLocalDescription(new RTCSessionDescription(d))
-
-            return fetch('/sendoffer', {
-                body: JSON.stringify({
-                    "sdp": d.sdp,
-                    "type": d.type,
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST'
-            })
-            .then(resp => console.log(resp))
-            .catch(e => log(e))
-        }).catch(log)
-    }).catch(log)
+.then(stream => {
+    pc.addStream(displayVideo(stream))
+    return pc.createOffer()
+    .then(offer => pc.setLocalDescription(offer))
+})
+.then(() => {
+    d = pc.localDescription
+    return fetch('/sendoffer', {
+        body: JSON.stringify({
+            "sdp": d.sdp,
+            "type": d.type,
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'POST'
+    })
+})
+.then(resp => console.log(resp.json()))
+.catch(log)
 
 function start() {
     return fetch('/getanswer', {

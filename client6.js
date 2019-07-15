@@ -125,5 +125,6 @@ setTimeout(async() => {
     })
 
     console.log("done")
-})
+    console.log(answer.sdp)
 
+})
