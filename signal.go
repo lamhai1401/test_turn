@@ -23,7 +23,7 @@ func Message(status bool, message string) map[string]interface{} {
 	return map[string]interface{}{"status": status, "message": message}
 }
 
-var sendOffer = func(w http.ResponseWriter, r *http.Request) {
+var SendOffer = func(w http.ResponseWriter, r *http.Request) {
 	session := Session{}
 	err := json.NewDecoder(r.Body).Decode(&session)
 
@@ -41,7 +41,7 @@ var sendOffer = func(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-var sendAnswer = func(w http.ResponseWriter, r *http.Request) {
+var SendAnswer = func(w http.ResponseWriter, r *http.Request) {
 	session := Session{}
 	err := json.NewDecoder(r.Body).Decode(&session)
 
@@ -59,7 +59,7 @@ var sendAnswer = func(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-var getOffer = func(w http.ResponseWriter, r *http.Request) {
+var GetOffer = func(w http.ResponseWriter, r *http.Request) {
 	// response
 	resp := Message(true, "get offer successfully !!!")
 	resp["offer"] = offer
@@ -67,7 +67,7 @@ var getOffer = func(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-var getAnswer = func(w http.ResponseWriter, r *http.Request) {
+var GetAnswer = func(w http.ResponseWriter, r *http.Request) {
 	// response
 	resp := Message(true, "get answer successfully !!!")
 	resp["answer"] = answer
