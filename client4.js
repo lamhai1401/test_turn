@@ -68,9 +68,7 @@ fetch('/getoffer', {
     return pc.setRemoteDescription(offer)
     .then(() => pc.createAnswer())
     .then(answer => {
-        return pc.setLocalDescription(answer)
-    })
-    .then(() => {
+        pc.setLocalDescription(answer)
         pc.onicecandidate = event => {
             if (event.candidate === null) {
                 document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))

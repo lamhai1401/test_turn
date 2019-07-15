@@ -107,6 +107,8 @@ setTimeout(async() => {
 
     await join()
 
+    await new Promise(r => setTimeout(r,2000))
+
     console.log(atob(document.getElementById('localSessionDescription').value))
     
     let answer = JSON.parse(atob(document.getElementById('localSessionDescription').value))
