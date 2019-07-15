@@ -71,21 +71,26 @@ fetch('/getoffer', {
         return pc.setLocalDescription(answer)
     })
     .then(() => {
-        answer = pc.localDescription
-        fetch('/sendanswer', {
-            body: JSON.stringify({
-                "sdp": answer.sdp,
-                "type": answer.type,
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'POST'
-        })
-        .then(resp => {
-            console.log(resp.json())
-        })
-        .catch(err => log(err))
+        pc.onicecandidate = event => {
+            if (event.candidate === null) {
+                document.getElementById('localSessionDescription').value = btoa(JSON.stringify(pc.localDescription))
+                answer = pc.localDescription
+                fetch('/sendanswer', {
+                    body: JSON.stringify({
+                        "sdp": answer.sdp,
+                        "type": answer.type,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST'
+                })
+                .then(resp => {
+                    console.log(resp.json())
+                })
+                .catch(err => log(err))
+            }
+        }
     })
     .catch(err => log(err))
 })
