@@ -5,11 +5,11 @@ var config = {
         {
             urls: ['stun:stun.l.google.com:19302']
         },
-        // {
-        //     urls: ["turn:35.247.173.254:3478"],
-        //     username: "username",
-        //     credential: "password"
-        // },
+        {
+            urls: ["turn:35.247.173.254:3478"],
+            username: "username",
+            credential: "password"
+        },
         {
             urls: ["turn:numb.viagenie.ca"],
             credential: "muazkh",
