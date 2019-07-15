@@ -88,7 +88,7 @@ function start() {
         }, false);
         signalingLog.textContent = pc.signalingState;
         answer = resp['answer']
-        console.log("answer", answer)
+        console.log("client3 answer", answer.sdp)
         return pc.setRemoteDescription(new RTCSessionDescription(answer))
     })
     .catch(err => alert(err))
