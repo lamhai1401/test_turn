@@ -41,13 +41,27 @@ let displayVideo = video => {
     return video
 }
 
-navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then(stream => {
-        pc.addStream(displayVideo(stream))
-        pc.createOffer().then(d => {
-            return pc.setLocalDescription(d)
-        }).catch(log)
-    }).catch(log)
+navigator.mediaDevices
+    .getUserMedia({ video: true, audio: true })
+    .then(async stream => {
+        await pc.addStream(displayVideo(stream))
+        let d = await pc.createOffer()
+        await pc.setLocalDescription(d)
+        return d
+    })
+    .then((d) => {
+        return fetch('/sendoffer', {
+            body: JSON.stringify({
+                "sdp": d.sdp,
+                "type": d.type,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST'
+        })
+    })
+    .catch(log)
 
 pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
 

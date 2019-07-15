@@ -85,3 +85,21 @@ function join() {
     })
     .catch(e => alert(e))
 }
+
+setTimeout(async() => {
+    console.log("run")
+    let {offer} = await fetch('/getoffer', {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'GET'
+    })
+    .then(resp => resp.json())
+
+    console.log(offer)
+
+    document.getElementById('remoteSessionDescription').value = btoa(JSON.stringify(offer))
+
+    join()
+})
+
