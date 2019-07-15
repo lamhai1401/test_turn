@@ -21,14 +21,14 @@ func main() {
 		HandleFunc("/client2.js", js2Handler)
 
 	router.
-		HandleFunc("/sendoffer", sendOffer).Methods("POST")
+		HandleFunc("/sendoffer", SendOffer).Methods("POST")
 	router.
-		HandleFunc("/sendanswer", sendAnswer).Methods("POST")
+		HandleFunc("/sendanswer", SendAnswer).Methods("POST")
 
 	router.
-		HandleFunc("/getoffer", getOffer).Methods("GET")
+		HandleFunc("/getoffer", GetOffer).Methods("GET")
 	router.
-		HandleFunc("/getanswer", getAnswer).Methods("GET")
+		HandleFunc("/getanswer", GetAnswer).Methods("GET")
 
 	router.
 		HandleFunc("/client3", client3Handler)
